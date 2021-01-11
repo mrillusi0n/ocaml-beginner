@@ -9,7 +9,7 @@ let double_tests = "test suite for double" >::: [
 
 let square_tests = "test suite for square" >::: [
   "zero"  >:: (fun _ -> assert_equal 0 (square 0));
-  "one"   >:: (fun _ -> assert_equal 1 (square 1));
+  "-one"   >:: (fun _ -> assert_equal 1 (square (-1)));
   "four"  >:: (fun _ -> assert_equal 16 (square 4));
 ]
 
