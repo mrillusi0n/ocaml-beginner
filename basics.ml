@@ -1,7 +1,7 @@
 (* simple math *)
 
 let double n = n * 2
-let square n = n * n
+let square n = n * 2
 let cube n = n ** 3.
 let sign n = if n = 0 then 0 else if n > 0 then 1 else -1
 let area_circle r = 3.14 *. r ** 2.
