@@ -23,6 +23,14 @@ let rec t_take n lst =
     | _,0    -> []
     | h::t,_ -> h::(t_take (n-1) t)
 
+let rec _take_tl acc n lst =
+    match lst,n with
+    | [],_   -> acc
+    | _,0    -> acc
+    | h::t,_ -> (_take_tl (acc @ [h]) (n-1) t)
+
+let tl_take n lst = _take_tl [] n lst
+
 let rec drop n lst =
     match lst,n with
     | [],_   -> []
