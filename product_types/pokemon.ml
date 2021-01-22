@@ -1,13 +1,15 @@
 type poketype = Normal | Fire | Water
-type pokemon = { name : string; hp : int; ptype : poketype }
+type pokemon  = { name : string; hp : int; ptype : poketype }
+type pokemon' = { name : string; hp : int; ptype : poketype }
 
 let charizard = {name = "Charizard"; hp = 78; ptype = Fire}
-let metapod = {name = "Metapod"; hp = 50; ptype = Normal}
-let pikachu = {name = "Pikachu"; hp = 64; ptype = Normal}
+let metapod   = {name = "Metapod"; hp = 50; ptype = Normal}
+let pikachu   = {name = "Pikachu"; hp = 64; ptype = Normal}
 
 let pokemons = [charizard; metapod; pikachu]
 
-let stronger_poke a b =
+val stronger_poke pokemon -> pokemon -> pokemon
+let stronger_poke (a:pokemon) (b:pokemon) =
     if a.hp > b.hp then a else b
 
 let rec max_hp = function
