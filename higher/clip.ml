@@ -19,6 +19,6 @@ let compose f g x = x |> g |> f
 
 let rec clipcomp = function
     | [] -> []
-    | h::t -> (compose (List.cons (clip h)) clipcomp) t
+    | h::t -> compose (List.cons (clip h)) clipcomp t
 
 let nums = [-1; -2; 2; 10; 100; 0; 5]
