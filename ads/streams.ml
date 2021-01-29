@@ -24,4 +24,4 @@ let rec sum (Cons (a, ta)) (Cons (b, tb)) =
 let rec map f (Cons (h, tf)) =
     Cons (f h, fun () -> map f (tf ()))
 
-let nats = from 1
+let rec nats = Cons (1, fun () -> map (fun x -> x+1) nats)
