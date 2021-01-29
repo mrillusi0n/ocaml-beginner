@@ -11,4 +11,8 @@ let rec take n s =
     if n = 0 then []
     else hd s :: take (n-1) (tl s)
 
+let rec drop n s =
+    if n = 0 then s
+    else drop (n-1) (tl s)
+
 let nats = from 0
