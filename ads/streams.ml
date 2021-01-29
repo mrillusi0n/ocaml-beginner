@@ -15,4 +15,7 @@ let rec drop n s =
     if n = 0 then s
     else drop (n-1) (tl s)
 
-let nats = from 0
+let rec square (Cons (h, tf)) =
+    Cons (h*h, fun () -> square (tf ()))
+
+let nats = from 1
