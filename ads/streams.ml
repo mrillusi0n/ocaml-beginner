@@ -25,3 +25,8 @@ let rec map f (Cons (h, tf)) =
     Cons (f h, fun () -> map f (tf ()))
 
 let rec nats = Cons (1, fun () -> map (fun x -> x+1) nats)
+
+let rec fib_seq =
+    Cons (1, fun () ->
+        Cons (1, fun () ->
+            sum fib_seq (tl fib_seq)))
