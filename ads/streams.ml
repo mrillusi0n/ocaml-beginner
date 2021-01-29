@@ -18,4 +18,10 @@ let rec drop n s =
 let rec square (Cons (h, tf)) =
     Cons (h*h, fun () -> square (tf ()))
 
+let rec sum (Cons (a, ta)) (Cons (b, tb)) =
+    Cons (a+b, fun () -> sum (ta ()) (tb ()))
+
+let rec map f (Cons (h, tf)) =
+    Cons (f h, fun () -> map f (tf ()))
+
 let nats = from 1
