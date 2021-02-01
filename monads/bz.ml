@@ -20,6 +20,6 @@ let make_take_pair (f : int -> int) : int * bool -> int * bool =
         (w, b' || b)
 
 let inc' = below_zero inc
-let dec' = below_zero inc
+let dec' = below_zero dec
 
 
