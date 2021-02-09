@@ -25,4 +25,8 @@ let amicable_pairs =
     |> List.filter (fun (a,b,s) -> a=s && a<>b)
     |> List.map (fun (a,b,s) -> (a,b))
 
-let sum_amicable = List.map (fun (x,y) -> x+y) amicable_pairs
+let sum_amicable =
+    let s = amicable_pairs
+    |> List.map (fun (x,y) -> x+y) 
+    |> List.fold_left (+) 0 in
+    s / 2
