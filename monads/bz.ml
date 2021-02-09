@@ -9,7 +9,7 @@ let below_zero f =
         let v = f x in
         bool_box v
 
-let (>>=) (boxed : int * bool) (f : int -> int * bool) : int * bool =
+let (>>=) (boxed : int * bool) ~func:(f:(int -> int * bool)) : int * bool =
     let (v, b) = boxed in
     let (w, b') = f v in
     (w, b' || b)
@@ -19,7 +19,7 @@ let make_take_pair (f : int -> int) : int * bool -> int * bool =
         let (w, b') = below_zero f v in
         (w, b' || b)
 
-let inc' = below_zero inc
-let dec' = below_zero dec
+let inc' = (>>=) ~func:(below_zero inc)
+let dec' = (>>=) ~func:(below_zero dec)
 
 
