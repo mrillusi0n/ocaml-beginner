@@ -14,6 +14,5 @@ let rec magic_merge merge_count lst =
         magic_merge count merged
 ;;
 
-let magic_wrapper = magic_merge 1
-;;
+let magic_wrapper = magic_merge 1 ;;
 
