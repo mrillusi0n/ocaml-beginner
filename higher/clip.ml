@@ -7,11 +7,11 @@ let clip_list lst = List.map clip lst
 
 let rec clipper = function
     | [] -> []
-    | h::t -> (clip h)::(clipper t)
+    | h::t -> clip h :: clipper t
 
 let rec _clipper acc = function
     | []  -> acc
-    | h::t -> _clipper ((clip h)::acc) t
+    | h::t -> _clipper (clip h::acc) t
 
 let clip_tr lst = List.rev (_clipper [] lst)
 
