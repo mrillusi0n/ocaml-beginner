@@ -5,4 +5,4 @@ let rec _powerset s = function
     in _powerset (List.rev_append t s) xs
 
 
-let powerset lst = _powerset [[]] lst
+let powerset = _powerset [[]]
