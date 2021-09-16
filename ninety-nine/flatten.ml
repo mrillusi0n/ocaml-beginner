@@ -2,8 +2,10 @@ type 'a node =
   | One of 'a 
   | Many of 'a node list;;
 
-let rec flatten = function
-  | [] -> []
-  | (One x) :: xs -> x :: flatten xs
-  | (Many ys) :: zs -> flatten ys @ flatten zs
+let flatten list =
+  let rec aux acc = function
+    | [] -> acc
+    | (One x) :: xs -> aux (x::acc) xs
+    | (Many ys) :: zs -> aux (aux acc ys) zs
+  in aux [] list |> List.rev
 ;;
