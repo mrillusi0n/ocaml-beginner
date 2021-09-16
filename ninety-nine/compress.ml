@@ -2,6 +2,6 @@ let compress list =
   let rec aux acc = function
     | [] -> acc
     | [x] -> x::acc
-    | x::y::xs -> if x = y then aux acc (y::xs) else aux (x::acc) (y::xs)
+    | x :: (y::_ as t) -> if x = y then aux acc t else aux (x::acc) t
   in aux [] list |> List.rev
 ;;
