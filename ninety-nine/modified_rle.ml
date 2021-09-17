@@ -15,14 +15,14 @@ let encode list =
 
 
 let decode list =
-  let rec cons times e acc =
+  let rec cons e times acc =
     if times = 0 then acc
-    else cons (times-1) e (e::acc)
+    else cons e (times-1) (e::acc)
   in 
 	let rec aux acc = function
 		| [] -> acc
 		| x::xs -> (match x with
 		| One a -> aux (a::acc) xs
-		| Many (count, b) -> aux (cons count b acc) xs)
+		| Many (count, b) -> aux (cons b count acc) xs)
 	in List.rev (aux [] list)
 ;;
