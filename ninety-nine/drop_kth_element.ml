@@ -11,5 +11,3 @@ let remove_at ~pos ~list =
   | [] -> list
   | _::xs -> List.rev_append left xs
 ;;
-
-
