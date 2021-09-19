@@ -7,6 +7,7 @@ let take list n =
   List.rev (aux [] list n)
 ;;
 
+(* [n] < [List.length list] *)
 let rec drop list n =
   match n, list with
   | 0, _ | _, [] -> list
