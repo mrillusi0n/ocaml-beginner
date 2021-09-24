@@ -1,42 +1,43 @@
-let pad char len string =
-  let str_len = String.length string in
-  if str_len >= len then string
-  else " " ^ string ^ (String.make (len - str_len) char) ^ " "
+(* [padded_length] >= [String.length string] *)
+let pad char padded_length string =
+  let padding = String.make (padded_length - String.length string) char
+  in String.concat [" "; string; padding; " "]
 
-let make_separator column_lengths =
-  "|" ^ (List.map column_lengths (fun len -> String.make (len + 2) '-')
-  |> String.concat ~sep:"+") ^ "|"
+let make_separator widths =
+  let pieces =
+    List.map widths (fun len -> String.make (len + 2) '-') |> String.concat ~sep:"+"
+  in String.concat ["|"; pieces; "|"]
 ;;
 
-let make_row column_lengths data =
-  "|" ^ (List.map2_exn column_lengths data ~f:(pad ' ')
-  |> String.concat ~sep:"|") ^ "|"
+let make_row widths row =
+  let padded =
+    List.map2_exn widths row ~f:(pad ' ') |> String.concat ~sep:"|"
+  in String.concat ["|"; padded; "|"]
+;;
 
-let make_rows list column_lengths =
-  list
-  |> List.map ~f:(make_row column_lengths)
+let max_widths header rows =
+  let lengths = List.map ~f:String.length in
+  List.fold_left
+    rows ~init:(lengths header)
+    ~f:(fun res row -> List.map2_exn res (lengths row) Int.max)
+  |> List.map ~f:(( + ) 2)
 
-let render_table headers rows =
-  let get_string_lenghts = List.map ~f:String.length in
-  let tf_rows = rows |> List.map ~f:get_string_lenghts in
-  let tf_headers = get_string_lenghts headers in
-  let max_lengths =
-    List.fold_left tf_rows ~init:tf_headers ~f:(List.map2_exn ~f:Int.max)
-    |> List.map ~f:(( + ) 2)
-  in
-     (make_row max_lengths headers)
-  :: (make_separator max_lengths)
-  :: (make_rows rows max_lengths)
+let render_table header rows =
+  let widths = max_widths header rows in
+  (make_row widths header)
+  :: (make_separator widths)
+  :: (List.map rows (make_row widths))
   |> String.concat ~sep:"\n"
 ;;
 
 Stdio.print_endline
   (render_table
-    ["language";"architect";"first release"]
-    [ ["Lisp" ;"John McCarthy" ;"1958"] ;
-      ["C"    ;"Dennis Ritchie";"1969"] ;
-      ["ML"   ;"Robin Milner"  ;"1973"] ;
-      ["OCaml";"Xavier Leroy"  ;"1996"] ; ])
+     ["language";"architect";"first release"]
+     [ ["Lisp" ;"John McCarthy" ;"1958"] ;
+       ["C"    ;"Dennis Ritchie";"1969"] ;
+       ["ML"   ;"Robin Milner"  ;"1973"] ;
+       ["OCaml";"Xavier Leroy"  ;"1996"] ;
+])
 ;;
 
 (**
