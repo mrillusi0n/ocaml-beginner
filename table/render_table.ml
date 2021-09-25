@@ -1,18 +1,23 @@
-(* [padded_length] >= [String.length string] *)
-let pad char padded_length string =
-  let padding = String.make (padded_length - String.length string) char
-  in String.concat [" "; string; padding; " "]
+(* [padded_length] >= [String.length text] *)
+let pad char padded_length text =
+  let padding = String.make (padded_length - String.length text) char in
+  String.concat [" "; text; padding; " "]
 
 let make_separator widths =
   let pieces =
-    List.map widths (fun len -> pad '-' len "") |> String.concat ~sep:"+"
-  in String.concat ["|"; pieces; "|"]
+    widths
+    |> List.map ~f:(fun len -> String.make (len + 2) '-')
+    |> String.concat ~sep:"+"
+  in
+  String.concat ["|"; pieces; "|"]
 ;;
 
 let make_row widths row =
   let padded =
-    List.map2_exn widths row ~f:(pad ' ') |> String.concat ~sep:"|"
-  in String.concat ["|"; padded; "|"]
+    List.map2_exn widths row ~f:(pad ' ')
+    |> String.concat ~sep:"|"
+  in
+  String.concat ["|"; padded; "|"]
 ;;
 
 let max_widths header rows =
@@ -23,7 +28,7 @@ let max_widths header rows =
 
 let render_table header rows =
   let widths = max_widths header rows in
-  let padded_widths = List.map widths (( + ) 2) in (* a space *)
+  let padded_widths = List.map widths (( + ) 2) in (* a space before and after *)
   (make_row padded_widths header)
   :: (make_separator padded_widths)
   :: (List.map rows (make_row padded_widths))
