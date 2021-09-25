@@ -20,13 +20,13 @@ let max_widths header rows =
   List.fold_left
     rows ~init:(lengths header)
     ~f:(fun res row -> List.map2_exn res (lengths row) Int.max)
-  |> List.map ~f:(( + ) 2)
 
 let render_table header rows =
   let widths = max_widths header rows in
-  (make_row widths header)
-  :: (make_separator widths)
-  :: (List.map rows (make_row widths))
+  let padded_widths = List.map widths (( + ) 2) in (* a space *)
+  (make_row padded_widths header)
+  :: (make_separator padded_widths)
+  :: (List.map rows (make_row padded_widths))
   |> String.concat ~sep:"\n"
 ;;
 
