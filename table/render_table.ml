@@ -5,7 +5,7 @@ let pad char padded_length string =
 
 let make_separator widths =
   let pieces =
-    List.map widths (fun len -> String.make (len + 2) '-') |> String.concat ~sep:"+"
+    List.map widths (fun len -> pad '-' len "") |> String.concat ~sep:"+"
   in String.concat ["|"; pieces; "|"]
 ;;
 
