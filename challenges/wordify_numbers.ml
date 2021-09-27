@@ -95,9 +95,10 @@ let rec face_place_pairs_to_words acc = function
       face_place_pairs_to_words (face_place_pair_to_word pair :: acc) rest
 ;;
 
-let append_place_word place l =
-  if place = 0 then l
-  else (place_to_word (10 ** (3 * place))) :: l
+let append_place_word place = function
+  | [] -> None
+  | l -> Some (if place = 0 then l else ((place_to_word (10 ** (3 * place))) :: l))
+;;
 
 let wordify_number = function
   | 0 -> "zero"
@@ -107,9 +108,7 @@ let wordify_number = function
     |> List.rev_mapi ~f:(fun i digit -> (digit, (10 ** (i % 3))))
     |> group International
     |> List.rev_mapi ~f:(fun i group -> face_place_pairs_to_words [] group)
-    |> List.filter_mapi ~f:(fun i words ->
-        if List.is_empty words then None
-        else Some (append_place_word i words))
+    |> List.filter_mapi ~f:append_place_word
     |> List.rev_map ~f:List.rev
     |> List.map ~f:(String.concat ~sep:" ")
     |> String.concat ~sep:" "
