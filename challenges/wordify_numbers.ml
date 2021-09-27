@@ -60,7 +60,13 @@ let pair_face_place_values digits =
   digits
   |> List.rev
   |> List.rev_mapi ~f:(fun i digit -> (digit, (10 ** (i % 3))))
+  |> group_three
   |> List.mapi ~f:(fun i group -> face_place_pairs_to_words [] group)
+  |> List.rev_map ~f:List.rev
+  |> List.map ~f:(String.concat ~sep:" ")
+  |> List.mapi ~f:(fun i words -> words ^ " " ^ (place_to_word (10 ** (3 * i))))
+  |> List.rev_map ~f:String.strip
+  |> String.concat ~sep:" "
 (*
       |> String.concat ~sep:" "
       in
@@ -99,11 +105,9 @@ let group_three list =
 ;;
 
 let wordify_number = function
-(*   | 0 -> "zero" *)
-  | 0 -> []
+  | 0 -> "zero"
   | n -> n
     |> extract_digits
-    |> group_three
     |> pair_face_place_values
 (*
     |> face_place_pairs_to_words []
@@ -113,7 +117,7 @@ let wordify_number = function
 *)
 ;;
 
-let number = 12345
+let number = 123456
 ;;
 
 let test = number |> extract_digits |> pair_face_place_values
