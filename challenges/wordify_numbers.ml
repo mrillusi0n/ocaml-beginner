@@ -41,6 +41,7 @@ let place_to_word = function
   | 100 -> "hundred"
   | 1000 -> "thousand"
   | 1000000 -> "million"
+  | 1000000000 -> "billion"
   | _ -> ""
 
 let extract_digits number =
@@ -56,22 +57,18 @@ let num_to_digit_words n =
   |> String.concat ~sep:" "
 ;;
 
-let pair_face_place_values digits =
-  digits
-  |> List.rev
-  |> List.rev_mapi ~f:(fun i digit -> (digit, (10 ** (i % 3))))
-  |> group_three
-  |> List.mapi ~f:(fun i group -> face_place_pairs_to_words [] group)
-  |> List.rev_map ~f:List.rev
-  |> List.map ~f:(String.concat ~sep:" ")
-  |> List.mapi ~f:(fun i words -> words ^ " " ^ (place_to_word (10 ** (3 * i))))
-  |> List.rev_map ~f:String.strip
-  |> String.concat ~sep:" "
-(*
-      |> String.concat ~sep:" "
+let group_three list =
+  let rec aux curr acc n = function
+    | [] ->
+        if List.is_empty curr then acc else curr::acc
+    | x::xs ->
+      let (curr', acc') =
+        if n % 3 = 0 then ([], (x::curr)::acc) else (x::curr, acc)
       in
-      res ^ " " ^ place_to_word (i * 1000))
-*)
+      aux curr' acc' (n+1) xs
+  in
+  List.rev list 
+    |> aux [] [] 1
 ;;
 
 let face_place_pair_to_word = function
@@ -90,35 +87,24 @@ let rec face_place_pairs_to_words acc = function
       face_place_pairs_to_words (face_place_pair_to_word pair :: acc) rest
 ;;
 
-let group_three list =
-  let rec aux curr acc n = function
-    | [] ->
-        if List.is_empty curr then acc else curr::acc
-    | x::xs ->
-      let (curr', acc') =
-        if n % 3 = 0 then ([], (x::curr)::acc) else (x::curr, acc)
-      in
-      aux curr' acc' (n+1) xs
-  in
-  List.rev list 
-    |> aux [] [] 1
-;;
 
 let wordify_number = function
   | 0 -> "zero"
   | n -> n
     |> extract_digits
-    |> pair_face_place_values
-(*
-    |> face_place_pairs_to_words []
-    |> List.filter ~f:(fun w -> not (String.equal "" w))
     |> List.rev
+    |> List.rev_mapi ~f:(fun i digit -> (digit, (10 ** (i % 3))))
+    |> group_three
+    |> List.mapi ~f:(fun i group -> face_place_pairs_to_words [] group)
+    |> List.rev_map ~f:List.rev
+    |> List.map ~f:(String.concat ~sep:" ")
+    |> List.mapi ~f:(fun i words -> words ^ " " ^ (place_to_word (10 ** (3 * i))))
+    |> List.rev_map ~f:String.strip
     |> String.concat ~sep:" "
-*)
 ;;
 
 let number = 123456
 ;;
 
-let test = number |> extract_digits |> pair_face_place_values
+let test = wordify_number number
 ;;
