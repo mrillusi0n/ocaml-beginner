@@ -39,8 +39,8 @@ let tenth_to_word = function
 
 let place_to_word = function
   | 100 -> "hundred"
-  | 1_000 -> "thousand"
-  | 1_000_000 -> "million"
+  | 1000 -> "thousand"
+  | 1000000 -> "million"
   | _ -> ""
 
 let extract_digits number =
@@ -59,7 +59,13 @@ let num_to_digit_words n =
 let pair_face_place_values digits =
   digits
   |> List.rev
-  |> List.rev_mapi ~f:(fun i digit -> (digit, (10 ** i)))
+  |> List.rev_mapi ~f:(fun i digit -> (digit, (10 ** (i % 3))))
+  |> List.mapi ~f:(fun i group -> face_place_pairs_to_words [] group)
+(*
+      |> String.concat ~sep:" "
+      in
+      res ^ " " ^ place_to_word (i * 1000))
+*)
 ;;
 
 let face_place_pair_to_word = function
@@ -78,13 +84,37 @@ let rec face_place_pairs_to_words acc = function
       face_place_pairs_to_words (face_place_pair_to_word pair :: acc) rest
 ;;
 
+let group_three list =
+  let rec aux curr acc n = function
+    | [] ->
+        if List.is_empty curr then acc else curr::acc
+    | x::xs ->
+      let (curr', acc') =
+        if n % 3 = 0 then ([], (x::curr)::acc) else (x::curr, acc)
+      in
+      aux curr' acc' (n+1) xs
+  in
+  List.rev list 
+    |> aux [] [] 1
+;;
+
 let wordify_number = function
-  | 0 -> "zero"
+(*   | 0 -> "zero" *)
+  | 0 -> []
   | n -> n
     |> extract_digits
+    |> group_three
     |> pair_face_place_values
+(*
     |> face_place_pairs_to_words []
     |> List.filter ~f:(fun w -> not (String.equal "" w))
     |> List.rev
     |> String.concat ~sep:" "
+*)
+;;
+
+let number = 12345
+;;
+
+let test = number |> extract_digits |> pair_face_place_values
 ;;
