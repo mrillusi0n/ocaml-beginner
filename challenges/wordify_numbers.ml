@@ -1,6 +1,3 @@
-type grouping = Indian | International
-;;
-
 let digit_to_word = function
   | 1 -> "one"
   | 2 -> "two"
@@ -46,6 +43,7 @@ let place_to_word = function
   | 1000000 -> "million"
   | 1000000000 -> "billion"
   | _ -> ""
+;;
 
 let extract_digits number =
   let rec aux digits n =
@@ -54,23 +52,13 @@ let extract_digits number =
   aux [] number
 ;;
 
-let num_to_digit_words n =
-  extract_digits n
-  |> List.map ~f:digit_to_word
-  |> String.concat ~sep:" "
-;;
-
-let group system list =
-  let divisor = match system with
-  | International -> 3
-  | Indian -> 2
-  in
+let group list =
   let rec aux curr acc n = function
     | [] ->
         if List.is_empty curr then acc else curr::acc
     | x::xs ->
       let (curr', acc') =
-        if n % divisor = 0 then ([], (x::curr)::acc) else (x::curr, acc)
+        if n % 3 = 0 then ([], (x::curr)::acc) else (x::curr, acc)
       in
       aux curr' acc' (n+1) xs
   in
@@ -106,7 +94,7 @@ let wordify_number = function
     |> extract_digits
     |> List.rev
     |> List.rev_mapi ~f:(fun i digit -> (digit, (10 ** (i % 3))))
-    |> group International
+    |> group
     |> List.rev_mapi ~f:(fun i group -> face_place_pairs_to_words [] group)
     |> List.filter_mapi ~f:append_place_word
     |> List.rev_map ~f:List.rev
