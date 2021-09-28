@@ -1,44 +1,44 @@
-let named_numbers = [|
-  "zero";
-  "one";
-  "two";
-  "three";
-  "four";
-  "five";
-  "six";
-  "seven";
-  "eight";
-  "nine";
-  "ten";
-  "eleven";
-  "twelve";
-  "thirteen";
-  "fourteen";
-  "fifteen";
-  "sixteen";
-  "seventeen";
-  "eighteen";
-  "nineteen";
-|] ;;
+let named_numbers =
+[| "zero"
+  ; "one"
+  ; "two"
+  ; "three"
+  ; "four"
+  ; "five"
+  ; "six"
+  ; "seven"
+  ; "eight"
+  ; "nine"
+  ; "ten"
+  ; "eleven"
+  ; "twelve"
+  ; "thirteen"
+  ; "fourteen"
+  ; "fifteen"
+  ; "sixteen"
+  ; "seventeen"
+  ; "eighteen"
+  ; "nineteen" |]
+;;
 
-let tens = [|
-  "one";
-  "ten";
-  "twenty";
-  "thirty";
-  "forty";
-  "fifty";
-  "sixty";
-  "seventy";
-  "eighty";
-  "ninety";
-|] ;;
+let tens =
+[| "one"
+  ; "ten"
+  ; "twenty"
+  ; "thirty"
+  ; "forty"
+  ; "fifty"
+  ; "sixty"
+  ; "seventy"
+  ; "eighty"
+  ; "ninety" |]
+;;
 
-let power_name = [|
-  "thousand";
-  "million";
-  "billion";
-|] ;;
+let power_name =
+[| "thousand"
+  ; "million"
+  ; "billion" |]
+;;
 
 let extract_digits number =
   let rec aux digits n =
