@@ -104,11 +104,16 @@ let wordify_number = function
 ;;
 
 let tests = [
-  (2000378, "two million three hundred seventy eight");
-  (1000, "one thousand");
-  (1040, "one thousand forty");
-  (10400, "ten thousand four hundred");
-  (8000000, "eight million");
+  (2000378   , "two million three hundred seventy eight");
+  (1000      , "one thousand");
+  (1040      , "one thousand forty");
+  (10400     , "ten thousand four hundred");
+  (8000000   , "eight million");
+  (0         , "zero");
+  (178       , "one hundred seventy eight");
+  (118       , "one hundred eighteen");
+  (56        , "fifty six");
+  (1         , "one");
 ]
 ;;
 
@@ -117,6 +122,6 @@ let () = List.iter tests (fun (test, expected) ->
     if (String.equal expected (wordify_number test))
     then "passed" else "failed"
   in
-  Stdio.print_endline (Printf.sprintf "%d %s" test message)
+  Stdio.print_endline (Printf.sprintf "%d\t\t%s" test message)
 )
 ;;
