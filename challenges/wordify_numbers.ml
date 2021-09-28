@@ -95,7 +95,7 @@ let wordify_number = function
     |> List.rev
     |> List.rev_mapi ~f:(fun i digit -> (digit, (10 ** (i % 3))))
     |> group
-    |> List.rev_mapi ~f:(fun i group -> face_place_pairs_to_words [] group)
+    |> List.rev_map ~f:(face_place_pairs_to_words [])
     |> List.filter_mapi ~f:append_place_word
     |> List.rev_map ~f:List.rev
     |> List.map ~f:(String.concat ~sep:" ")
