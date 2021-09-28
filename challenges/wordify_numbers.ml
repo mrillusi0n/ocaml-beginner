@@ -71,16 +71,21 @@ let face_place_pair_to_word = function
   | (face, place) -> (digit_to_word face) ^ " " ^ (place_to_word place)
 ;;
 
-let rec face_place_pairs_to_words acc = function
-  | [] -> acc
-  | (0, _) :: rest -> face_place_pairs_to_words acc rest
-  | [(digit, _)] -> digit_to_word digit :: acc
-  | [(tens, _); (0, _)] -> tenth_to_word tens :: acc
-  | [(1, _); (ones, _)] -> eleven_to_twenty_to_word (10 + ones) :: acc
-  | [(tens, _); (ones, _)] ->
-      (digit_to_word ones) :: (tenth_to_word tens) :: acc
-  | pair :: rest ->
-      face_place_pairs_to_words (face_place_pair_to_word pair :: acc) rest
+let join_with_spaces = String.concat ~sep:" "
+
+let face_place_pairs_to_words pairs =
+  let rec aux acc = function
+    | [] -> acc
+    | (0, _) :: rest -> aux acc rest
+    | [(digit, _)] -> digit_to_word digit :: acc
+    | [(tens, _); (0, _)] -> tenth_to_word tens :: acc
+    | [(1, _); (ones, _)] -> eleven_to_twenty_to_word (10 + ones) :: acc
+    | [(tens, _); (ones, _)] ->
+        (digit_to_word ones) :: (tenth_to_word tens) :: acc
+    | pair :: rest ->
+        aux (face_place_pair_to_word pair :: acc) rest
+  in
+  aux [] pairs
 ;;
 
 let append_place_word place = function
@@ -88,18 +93,21 @@ let append_place_word place = function
   | l -> Some (if place = 0 then l else ((place_to_word (10 ** (3 * place))) :: l))
 ;;
 
+let pair_digit_with_place i digit =
+  (digit, (10 ** (i % 3)))
+
 let wordify_number = function
   | 0 -> "zero"
   | n -> n
     |> extract_digits
     |> List.rev
-    |> List.rev_mapi ~f:(fun i digit -> (digit, (10 ** (i % 3))))
+    |> List.rev_mapi ~f:pair_digit_with_place
     |> group
-    |> List.rev_map ~f:(face_place_pairs_to_words [])
+    |> List.rev_map ~f:face_place_pairs_to_words
     |> List.filter_mapi ~f:append_place_word
     |> List.rev_map ~f:List.rev
-    |> List.map ~f:(String.concat ~sep:" ")
-    |> String.concat ~sep:" "
+    |> List.map ~f:join_with_spaces
+    |> join_with_spaces
 ;;
 
 let tests = [123456; 1000; 1042; 65534; 300000; 5000000; 1000000000]
