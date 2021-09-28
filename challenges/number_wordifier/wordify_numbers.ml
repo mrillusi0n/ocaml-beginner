@@ -1,5 +1,5 @@
 let named_numbers =
-[| "zero"
+[|  "zero"
   ; "one"
   ; "two"
   ; "three"
@@ -22,7 +22,7 @@ let named_numbers =
 ;;
 
 let tens =
-[| "one"
+[|  "one"
   ; "ten"
   ; "twenty"
   ; "thirty"
@@ -35,7 +35,7 @@ let tens =
 ;;
 
 let power_name =
-[| "thousand"
+[|  "thousand"
   ; "million"
   ; "billion" |]
 ;;
