@@ -44,22 +44,18 @@ let power_name = [|
 ;;
 
 let extract_digits number =
-  let rec aux digits n =
-    if n = 0 then digits else aux (n % 10 :: digits) (n / 10)
-  in
+  let rec aux digits n = if n = 0 then digits else aux (n % 10 :: digits) (n / 10) in
   aux [] number
 ;;
 
 let group_three list =
   let rec aux curr acc n = function
     | [] -> if List.is_empty curr then acc else curr::acc
-    | x::xs ->
-      let (curr', acc') = match n % 3 with
-        | 0 -> ([], (x::curr)::acc)
-        | _ -> (x::curr, acc)
-      in
-      aux curr' acc' (n+1) xs
-  in
+    | x::xs -> let (curr', acc') = match n % 3 with
+    | 0 -> ([], (x::curr)::acc)
+    | _ -> (x::curr, acc)
+    in
+    aux curr' acc' (n+1) xs in
   List.rev list |> aux [] [] 1 
 ;;
 
@@ -73,13 +69,13 @@ let rec group_to_word = function
   | [1; digit] -> Some [named_numbers.(digit+10)]
   | [tenth; 0] -> Some [tens.(tenth)]
   | [tenth; first] -> Some [tens.(tenth); named_numbers.(first)]
-  | h :: (_::_ as digits) ->
-      Some ((named_numbers.(h) ^ " hundred") :: (Option.value (group_to_word digits) ~default:[]))
+  | h :: (_::_ as digits) -> Some ((named_numbers.(h) ^ " hundred")
+  :: (Option.value (group_to_word digits) ~default:[]))
 
 
-let wordify_number = function
-  | 0 -> "zero"
-  | n -> List.(match (n
+let wordify_number n =
+  if n < 20 then named_numbers.(n) else
+  List.(match (n
   |> extract_digits
   |> group_three
   |> rev_map ~f:group_to_word
@@ -109,10 +105,6 @@ let tests = [
 ;;
 
 let () = List.iter tests (fun (test, expected) ->
-  let message =
-    if (String.equal expected (wordify_number test))
-    then "passed" else "failed"
-  in
-  Stdio.print_endline (Printf.sprintf "%d\t\t%s" test message)
-)
+  let message = if (String.equal expected (wordify_number test)) then "Passed" else "Failed" in
+  Stdio.print_endline (Printf.sprintf "%d\t\t%s" test message))
 ;;
