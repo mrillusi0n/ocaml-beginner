@@ -1,43 +1,46 @@
-let named_numbers =
-[|  "zero"
-  ; "one"
-  ; "two"
-  ; "three"
-  ; "four"
-  ; "five"
-  ; "six"
-  ; "seven"
-  ; "eight"
-  ; "nine"
-  ; "ten"
-  ; "eleven"
-  ; "twelve"
-  ; "thirteen"
-  ; "fourteen"
-  ; "fifteen"
-  ; "sixteen"
-  ; "seventeen"
-  ; "eighteen"
-  ; "nineteen" |]
+let named_numbers = [|
+  "zero"
+; "one"
+; "two"
+; "three"
+; "four"
+; "five"
+; "six"
+; "seven"
+; "eight"
+; "nine"
+; "ten"
+; "eleven"
+; "twelve"
+; "thirteen"
+; "fourteen"
+; "fifteen"
+; "sixteen"
+; "seventeen"
+; "eighteen"
+; "nineteen"
+|]
 ;;
 
-let tens =
-[|  "one"
-  ; "ten"
-  ; "twenty"
-  ; "thirty"
-  ; "forty"
-  ; "fifty"
-  ; "sixty"
-  ; "seventy"
-  ; "eighty"
-  ; "ninety" |]
+let tens = [|
+  "zero" (* will not be used *)
+; "ten"
+; "twenty"
+; "thirty"
+; "forty"
+; "fifty"
+; "sixty"
+; "seventy"
+; "eighty"
+; "ninety"
+|]
 ;;
 
-let power_name =
-[|  "thousand"
-  ; "million"
-  ; "billion" |]
+let power_name = [|
+  "thousand"
+; "million"
+; "billion"
+|]
 ;;
 
 let extract_digits number =
@@ -49,57 +52,45 @@ let extract_digits number =
 
 let group_three list =
   let rec aux curr acc n = function
-    | [] ->
-        if List.is_empty curr then acc else curr::acc
+    | [] -> if List.is_empty curr then acc else curr::acc
     | x::xs ->
-      let (curr', acc') =
-        if n % 3 = 0 then ([], (x::curr)::acc) else (x::curr, acc)
+      let (curr', acc') = match n % 3 with
+        | 0 -> ([], (x::curr)::acc)
+        | _ -> (x::curr, acc)
       in
       aux curr' acc' (n+1) xs
   in
-  List.rev list 
-    |> aux [] [] 1
+  List.rev list |> aux [] [] 1 
 ;;
 
 let join_with_spaces = String.concat ~sep:" "
 ;;
 
-let pair_digit_with_place i digit = (digit, (10 ** (i % 3)))
-;;
+let rec group_to_word = function
+  | [] -> None
+  | 0 :: digits -> group_to_word digits
+  | [digit] -> Some [named_numbers.(digit)]
+  | [1; digit] -> Some [named_numbers.(digit+10)]
+  | [tenth; 0] -> Some [tens.(tenth)]
+  | [tenth; first] -> Some [tens.(tenth); named_numbers.(first)]
+  | h :: (_::_ as digits) ->
+      Some ((named_numbers.(h) ^ " hundred") :: (Option.value (group_to_word digits) ~default:[]))
 
-let pair_to_word = function
-  | (0, _) -> None
-  | (face, 1) -> Some named_numbers.(face)
-  | (face, 10) -> Some tens.(face)
-  | (face, _) -> Some (named_numbers.(face) ^ " hundred")
-;;
-
-let group_to_words group =
-  let rec aux acc = function
-    | [] -> acc
-    | [(1, _); (x, _)] -> Some (named_numbers.(x+10)) :: acc
-    | pair :: rest -> aux (pair_to_word pair :: acc) rest
-  in
-  aux [] group
-;;
 
 let wordify_number = function
   | 0 -> "zero"
   | n -> List.(match (n
   |> extract_digits
-  |> rev
-  |> rev_mapi ~f:pair_digit_with_place
   |> group_three
-  |> map ~f:group_to_words
-  |> rev_map ~f:(rev_filter_map ~f:Fn.id)
-  |> map ~f:join_with_spaces
-  |> map ~f:(fun s -> if String.is_empty s then None else Some s))
+  |> rev_map ~f:group_to_word
+  |> map ~f:(Option.map ~f:rev))
   with
   | [] -> "zero"
   | ones :: rest -> ones :: (rest
-  |> mapi ~f:(fun i words -> Option.map words (fun words ->
-      (words ^ " " ^ power_name.(i)))))
+  |> mapi ~f:(fun i words -> Option.map words (fun w -> (power_name.(i) :: w))))
   |> rev_filter_map ~f:Fn.id
+  |> map ~f:rev
+  |> map ~f:join_with_spaces
   |> join_with_spaces)
 ;;
 
@@ -118,7 +109,7 @@ let tests = [
 ;;
 
 let () = List.iter tests (fun (test, expected) ->
-  let message = 
+  let message =
     if (String.equal expected (wordify_number test))
     then "passed" else "failed"
   in
