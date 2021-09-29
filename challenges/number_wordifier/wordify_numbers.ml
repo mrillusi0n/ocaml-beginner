@@ -62,15 +62,15 @@ let group_three list =
 let join_with_spaces = String.concat ~sep:" "
 ;;
 
-let rec group_to_word = function
+let rec group_to_words = function
   | [] -> None
-  | 0 :: digits -> group_to_word digits
+  | 0 :: digits -> group_to_words digits
   | [digit] -> Some [named_numbers.(digit)]
   | [1; digit] -> Some [named_numbers.(digit+10)]
   | [tenth; 0] -> Some [tens.(tenth)]
   | [tenth; first] -> Some [tens.(tenth); named_numbers.(first)]
   | h :: (_::_ as digits) -> Some ((named_numbers.(h) ^ " hundred")
-  :: (Option.value (group_to_word digits) ~default:[]))
+  :: (Option.value (group_to_words digits) ~default:[]))
 
 
 let wordify_number n =
@@ -78,7 +78,7 @@ let wordify_number n =
   List.(match (n
   |> extract_digits
   |> group_three
-  |> rev_map ~f:group_to_word
+  |> rev_map ~f:group_to_words
   |> map ~f:(Option.map ~f:rev))
   with
   | [] -> "zero"
