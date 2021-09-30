@@ -54,10 +54,10 @@ let extract_digits number =
 
 let group_three list =
   let rec aux curr acc n = function
-    | [] -> if List.is_empty curr then acc else curr::acc
-    | x::xs -> let (curr', acc') = match n % 3 with
-    | 0 -> ([], (x::curr)::acc)
-    | _ -> (x::curr, acc)
+    | [] -> if List.is_empty curr then acc else curr :: acc
+    | x :: xs -> let (curr', acc') = match n % 3 with
+    | 0 -> ([], (x :: curr) :: acc)
+    | _ -> (x :: curr, acc)
     in
     aux curr' acc' (n+1) xs in
   List.rev list |> aux [] [] 1 
