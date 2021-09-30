@@ -37,12 +37,13 @@ let tens = [|
 ;;
 
 let power_name = [|
-  "thousand"
-; "million"
-; "billion"
-; "trillion"
-; "quadrillion"
-; "quintillion"
+  None
+; Some "thousand"
+; Some "million"
+; Some "billion"
+; Some "trillion"
+; Some "quadrillion"
+; Some "quintillion"
 |]
 ;;
 
@@ -74,22 +75,25 @@ let rec group_to_words = function
   | [tenth; first] -> Some [tens.(tenth); named_numbers.(first)]
   | h :: (_::_ as digits) -> Some ((named_numbers.(h) ^ " hundred")
   :: (Option.value (group_to_words digits) ~default:[]))
+;;
 
+let name_group l = function
+  | None -> l
+  | Some name -> Option.map l (List.cons name)
+;;
+
+let (<<) = Fn.compose
+;;
 
 let wordify_number n =
-  if n < 20 then named_numbers.(n) else
-  List.(match (n
+  if n < 20 then named_numbers.(n) else let open List in
+  n
   |> extract_digits
   |> group_three
-  |> rev_map ~f:group_to_words
-  |> map ~f:(Option.map ~f:rev))
-  with
-  | [] -> "zero"
-  | ones :: rest -> ones :: (rest
-  |> mapi ~f:(fun i words -> Option.map words (fun w -> (power_name.(i) :: w))))
-  |> rev_filter_map ~f:Fn.id
-  |> map ~f:(Fn.compose join_with_spaces rev)
-  |> join_with_spaces)
+  |> rev_map ~f:(Option.map ~f:rev << group_to_words)
+  |> rev_filter_mapi ~f:(fun i words -> name_group words power_name.(i))
+  |> map ~f:(join_with_spaces << rev)
+  |> join_with_spaces
 ;;
 
 let tests = [
@@ -106,8 +110,10 @@ let tests = [
 ]
 ;;
 
-let () = tests
-  |> List.iter ~f:(fun (test, expected) ->
-  let message = if (String.equal expected (wordify_number test)) then "Passed" else "Failed" in
-  Stdio.print_endline (Printf.sprintf "%d\t\t%s" test message))
+let () = List.iter tests ~f:(fun (test, expected) ->
+  let message = match (String.equal expected (wordify_number test)) with
+  | true -> "✓"
+  | false -> "✗"
+  in
+  Stdio.print_endline (Printf.sprintf "%s %d" message test))
 ;;
