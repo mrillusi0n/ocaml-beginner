@@ -47,14 +47,14 @@ let power_name = [|
 ;;
 
 let extract_digits number =
-  let rec aux digits n = if n = 0 then digits else aux (n % 10 :: digits) (n / 10) in
+  let rec aux digits n = if n = 0 then digits else aux (n mod 10 :: digits) (n / 10) in
   aux [] number
 ;;
 
 let group_three list =
   let rec aux curr acc n = function
-    | [] -> if List.is_empty curr then acc else curr::acc
-    | x::xs -> let (curr', acc') = match n % 3 with
+    | [] -> if curr = [] then acc else curr::acc
+    | x::xs -> let (curr', acc') = match n mod 3 with
     | 0 -> ([], (x::curr)::acc)
     | _ -> (x::curr, acc)
     in
@@ -62,7 +62,7 @@ let group_three list =
   List.rev list |> aux [] [] 1 
 ;;
 
-let join_with_spaces = String.concat ~sep:" "
+let join_with_spaces = String.concat " "
 ;;
 
 let rec group_to_words = function
@@ -81,15 +81,16 @@ let wordify_number n =
   List.(match (n
   |> extract_digits
   |> group_three
-  |> rev_map ~f:group_to_words
-  |> map ~f:(Option.map ~f:rev))
+  |> rev_map group_to_words
+  |> map (Option.map rev))
   with
   | [] -> "zero"
   | ones :: rest -> ones :: (rest
-  |> mapi ~f:(fun i words -> Option.map words (fun w -> (power_name.(i) :: w))))
-  |> rev_filter_map ~f:Fn.id
-  |> map ~f:rev
-  |> map ~f:join_with_spaces
+  |> mapi (fun i words -> Option.map (fun w -> (power_name.(i) :: w)) words))
+  |> filter_map Fun.id
+  |> rev
+  |> map rev
+  |> map join_with_spaces
   |> join_with_spaces)
 ;;
 
@@ -107,7 +108,8 @@ let tests = [
 ]
 ;;
 
-let () = List.iter tests (fun (test, expected) ->
+let () = tests
+  |> List.iter (fun (test, expected) ->
   let message = if (String.equal expected (wordify_number test)) then "Passed" else "Failed" in
   Stdio.print_endline (Printf.sprintf "%d\t\t%s" test message))
 ;;
