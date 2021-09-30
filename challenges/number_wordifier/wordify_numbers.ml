@@ -46,6 +46,9 @@ let power_name = [|
 |]
 ;;
 
+let (<-<) f g x = x |> g |> f
+;;
+
 let extract_digits number =
   let rec aux digits n = if n = 0 then digits else aux (n mod 10 :: digits) (n / 10) in
   aux [] number
@@ -89,8 +92,7 @@ let wordify_number n =
   |> mapi (fun i words -> Option.map (fun w -> (power_name.(i) :: w)) words))
   |> filter_map Fun.id
   |> rev
-  |> map rev
-  |> map join_with_spaces
+  |> map (join_with_spaces <-< rev)
   |> join_with_spaces)
 ;;
 
