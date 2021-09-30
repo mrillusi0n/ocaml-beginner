@@ -77,7 +77,7 @@ let rec group_to_words = function
   :: (Option.value (group_to_words digits) ~default:[]))
 ;;
 
-let name_group l = function
+let name_group p l = match power_name.(p) with
   | None -> l
   | Some name -> Option.map l (List.cons name)
 ;;
@@ -85,13 +85,13 @@ let name_group l = function
 let (<<) = Fn.compose
 ;;
 
-let wordify_number n =
-  if n < 20 then named_numbers.(n) else let open List in
-  n
+let wordify_number = function
+  | n when n < 20 -> named_numbers.(n)
+  | n -> let open List in n
   |> extract_digits
   |> group_three
   |> rev_map ~f:(Option.map ~f:rev << group_to_words)
-  |> rev_filter_mapi ~f:(fun i words -> name_group words power_name.(i))
+  |> rev_filter_mapi ~f:name_group
   |> map ~f:(join_with_spaces << rev)
   |> join_with_spaces
 ;;
