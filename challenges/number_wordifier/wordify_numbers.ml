@@ -40,6 +40,9 @@ let power_name = [|
   "thousand"
 ; "million"
 ; "billion"
+; "trillion"
+; "quadrillion"
+; "quintillion"
 |]
 ;;
 
