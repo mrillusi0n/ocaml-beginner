@@ -47,6 +47,12 @@ let power_name = [|
 |]
 ;;
 
+let join_with_spaces = String.concat ~sep:" "
+;;
+
+let (<<) = Fn.compose
+;;
+
 let extract_digits number =
   let rec aux digits n = if n = 0 then digits else aux (n % 10 :: digits) (n / 10) in
   aux [] number
@@ -63,9 +69,6 @@ let group_three list =
   List.rev list |> aux [] [] 1 
 ;;
 
-let join_with_spaces = String.concat ~sep:" "
-;;
-
 let rec group_to_words = function
   | [] -> None
   | 0 :: digits -> group_to_words digits
@@ -80,9 +83,6 @@ let rec group_to_words = function
 let name_group p l = match power_name.(p) with
   | None -> l
   | Some name -> Option.map l (List.cons name)
-;;
-
-let (<<) = Fn.compose
 ;;
 
 let wordify_number = function
