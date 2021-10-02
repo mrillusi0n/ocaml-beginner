@@ -1,3 +1,5 @@
+open Base ;;
+
 let named_numbers = [|
   "zero"
 ; "one"
@@ -19,8 +21,7 @@ let named_numbers = [|
 ; "seventeen"
 ; "eighteen"
 ; "nineteen"
-|]
-;;
+|] ;;
 
 let tens = [|
   "zero" (* will not be used *)
@@ -33,8 +34,7 @@ let tens = [|
 ; "seventy"
 ; "eighty"
 ; "ninety"
-|]
-;;
+|] ;;
 
 let power_name = [|
   None
@@ -44,8 +44,7 @@ let power_name = [|
 ; Some "trillion"
 ; Some "quadrillion"
 ; Some "quintillion"
-|]
-;;
+|] ;;
 
 let join_with_spaces = String.concat ~sep:" "
 ;;
