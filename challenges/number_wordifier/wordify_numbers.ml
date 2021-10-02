@@ -46,11 +46,9 @@ let power_name = [|
 ; Some "quintillion"
 |] ;;
 
-let join_with_spaces = String.concat ~sep:" "
-;;
+let join_with_spaces = String.concat ~sep:" " ;;
 
-let (<<) = Fn.compose
-;;
+let (<<) = Fn.compose ;;
 
 let extract_digits number =
   let rec aux digits n = if n = 0 then digits else aux (n % 10 :: digits) (n / 10) in
