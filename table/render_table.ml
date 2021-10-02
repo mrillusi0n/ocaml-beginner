@@ -2,6 +2,7 @@
 let pad char padded_length text =
   let padding = String.make (padded_length - String.length text) char in
   String.concat [" "; text; padding; " "]
+;;
 
 let make_separator widths =
   let pieces =
@@ -24,6 +25,7 @@ let max_widths header rows =
   let lengths = List.map ~f:String.length in
   let max_lengths res row = List.map2_exn res (lengths row) Int.max in
   List.fold_left rows ~init:(lengths header) ~f:max_lengths
+;;
 
 let render_table header rows =
   let widths = max_widths header rows in
