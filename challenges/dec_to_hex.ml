@@ -23,7 +23,7 @@ let dec_to_hex n =
     else aux (x % 16 :: acc) (x / 16)
   in
   (if n = 0 then [0] else aux [] n)
-  |> List.map ~f:(fun x -> hex_table.(x))
+  |> List.map ~f:(Array.get hex_table)
   |> String.concat
 ;;
 
