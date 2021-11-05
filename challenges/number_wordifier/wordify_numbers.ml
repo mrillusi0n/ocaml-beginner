@@ -107,10 +107,10 @@ let tests = [
 ]
 ;;
 
-let () = List.iter tests ~f:(fun (test, expected) ->
-  let message = match (String.equal expected (wordify_number test)) with
+let () = List.iter tests (fun (test, expected) ->
+  let status = match (String.equal expected (wordify_number test)) with
   | true -> "✓"
   | false -> "✗"
   in
-  Stdio.print_endline (Printf.sprintf "%s %d" message test))
+  Stdio.print_endline (Printf.sprintf "%s %d" status test))
 ;;
