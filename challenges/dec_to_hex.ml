@@ -1,4 +1,4 @@
-let hex_table = [|
+let table = [|
   "0"
 ; "1"
 ; "2"
@@ -17,14 +17,12 @@ let hex_table = [|
 ; "F"
 |] ;;
 
-let dec_to_hex n =
+let dec_to_other_base base n =
   let rec aux acc x =
     if x = 0 then acc
-    else aux (x % 16 :: acc) (x / 16)
+    else aux (table.(x % base) :: acc) (x / base)
   in
-  (if n = 0 then [0] else aux [] n)
-  |> List.map ~f:(Array.get hex_table)
-  |> String.concat
+  String.concat (if n = 0 then ["0"] else aux [] n)
 ;;
 
-let hex_twenty = dec_to_hex 20 ;;
+let hex_twenty = dec_to_other_base 16 20 ;;
