@@ -55,17 +55,6 @@ let extract_digits number =
   aux [] number
 ;;
 
-let group_three list =
-  let rec aux curr acc n = function
-    | [] -> if List.is_empty curr then acc else curr :: acc
-    | x :: xs -> let (curr', acc') = match n % 3 with
-    | 0 -> ([], (x :: curr) :: acc)
-    | _ -> (x :: curr, acc)
-    in
-    aux curr' acc' (n+1) xs in
-  List.rev list |> aux [] [] 1 
-;;
-
 let rec group_to_words = function
   | [] -> None
   | 0 :: digits -> group_to_words digits
@@ -85,10 +74,10 @@ let name_group p l = match power_name.(p) with
 let wordify_number = function
   | n when n < 20 -> named_numbers.(n)
   | n -> let open List in n
-  |> extract_digits
-  |> group_three
-  |> rev_map ~f:(Option.map ~f:rev << group_to_words)
-  |> rev_filter_mapi ~f:name_group
+  |> extract_digits |> rev
+  |> groupi ~break:(fun i _ _ -> i % 3 = 0)
+  |> map ~f:(Option.map ~f:rev << group_to_words << rev)
+  |> rev_filter_mapi ~f:(name_group)
   |> map ~f:(join_with_spaces << rev)
   |> join_with_spaces
 ;;
@@ -97,7 +86,7 @@ let tests = [
   (2000378   , "two million three hundred seventy eight");
   (1000      , "one thousand");
   (1040      , "one thousand forty");
-  (10400     , "ten thousand four hundred");
+  (31089     , "thirty one thousand eighty nine");
   (8000000   , "eight million");
   (0         , "zero");
   (178       , "one hundred seventy eight");
