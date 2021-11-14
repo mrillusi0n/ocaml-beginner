@@ -77,7 +77,7 @@ let wordify_number = function
 	|> extract_digits |> rev
 	|> groupi ~break:(fun i _ _ -> i % 3 = 0)
 	|> map ~f:(Option.map ~f:rev << group_to_words << rev)
-	|> rev_filter_mapi ~f:(name_group)
+	|> rev_filter_mapi ~f:name_group
 	|> map ~f:(join_with_spaces << rev)
 	|> join_with_spaces
 ;;
