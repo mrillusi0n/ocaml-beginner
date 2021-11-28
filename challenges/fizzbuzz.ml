@@ -7,6 +7,7 @@ let fizzbuzz vocable_pairs n =
 	| [] -> Int.to_string n
 	| l -> String.concat l
 
+
 let (--) init term =
 	List.init (term - init) (( + ) init)
 
@@ -16,5 +17,6 @@ let fizzbuzzer = List.map ~f:(fizzbuzz [
 	(5,"Buzz");
 	(3,"Fizz");
 ])
+
 
 let test = fizzbuzzer (1 -- 64)
