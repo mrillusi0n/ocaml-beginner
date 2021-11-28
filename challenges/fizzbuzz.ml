@@ -20,7 +20,7 @@ let (--) init term =
 let fizzbuzzer = List.map ~f:(fizzbuzz [
 	(7,"Bazz");
 	(5,"Buzz");
-	(3,"Fizz")])
+	(3,"Fizz");
+])
 
 let test = fizzbuzzer (1 -- 64)
-
