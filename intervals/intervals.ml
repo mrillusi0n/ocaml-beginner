@@ -20,7 +20,9 @@ module type Interval_intf = sig
   val intersect : t -> t -> t
 end
 
-module Make_interval (Endpoint : Comparable) : Interval_intf = struct
+module Make_interval (Endpoint : Comparable)
+: (Interval_intf with type endpoint := Endpoint.t)
+= struct
 
   type endpoint = Endpoint.t
   type t =
@@ -52,6 +54,9 @@ module Make_interval (Endpoint : Comparable) : Interval_intf = struct
     | _ -> Empty
 
 end
+
+module type Int_interval_intf =
+  Interval_intf with type endpoint := int
 
 module Int_interval =
   Make_interval(struct
