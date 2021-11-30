@@ -4,11 +4,14 @@ type ordering =
 | Less
 
 module type Comparable = sig
+
   type t
   val compare : t -> t -> ordering
+
 end
 
 module Make_interval (Endpoint : Comparable) = struct
+
   type t =
     | Empty
     | Interval of Endpoint.t * Endpoint.t
@@ -26,7 +29,7 @@ module Make_interval (Endpoint : Comparable) = struct
     | Empty -> false
     | Interval (l, h) ->
       match Endpoint.(compare x l, compare x h) with
-      | (Less, Greater) -> false
+      | (Less, _) | (_, Greater) -> false
       | _ -> true
 
   let intersect t u =
@@ -36,4 +39,16 @@ module Make_interval (Endpoint : Comparable) = struct
     match (t, u) with
     | (Interval (a, b), Interval (x, y)) -> create (max a x) (min b y)
     | _ -> Empty
+
 end
+
+module Int_interval =
+  Make_interval(struct
+    type t = int
+
+    let compare a b =
+      match (a < b, a = b) with
+      | (true, _) -> Less
+      | (_, true) -> Equal
+      | _ -> Greater
+  end)
