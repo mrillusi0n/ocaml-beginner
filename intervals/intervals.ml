@@ -10,8 +10,19 @@ module type Comparable = sig
 
 end
 
-module Make_interval (Endpoint : Comparable) = struct
+module type Interval_intf = sig
+  type t
+  type endpoint
 
+  val create : endpoint -> endpoint -> t
+  val is_empty : t -> bool
+  val contains : t -> endpoint -> bool
+  val intersect : t -> t -> t
+end
+
+module Make_interval (Endpoint : Comparable) : Interval_intf = struct
+
+  type endpoint = Endpoint.t
   type t =
     | Empty
     | Interval of Endpoint.t * Endpoint.t
